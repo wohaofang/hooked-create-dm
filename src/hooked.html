@@ -1,0 +1,98 @@
+<div id="con" class="con"  :class="{chatStyle:data.chatStyle>=2,weChatStyle:data.weChatStyle}">
+    <!--内容-->
+    
+    <div class="clickInt" v-bind:style="{backgroundImage:'url('+ data.bg+')'}" @click="clickHooked"><div></div></div>
+    <div class="hooked container" id="hooked" @click="clickHooked">
+        <transition-group name="list" class="list-box" tag="div">
+            <div class="hooked-list clearfix list-item" v-bind:key="h" v-if="!h.setEnd" v-for="(h,idx) in data.showHooked"  :class="{right:h.right,left:!h.right&&h.name!='',aside:h.name==''}">
+                <img @click="changeAvatar(h)" class="head-img" v-if="data.weChatStyle&&h.name!=''"  :src="h.head" alt="">
+                <!-- <img class="scene_bg" v-show="h.scene_bg"  :src="h.scene_bg"> -->
+                <p class="name" :style="{color:h.color}">{{h.name}}</p>
+                <div class="content" :class="{imgContent:h.img?true:false,'share-article-content':h.f==1?true:false}">
+                    <p v-show="h.d">{{h.d}}</p>
+                    <img class="image" @click="showBigImg(event,h.img)" :class="h.name?'':'noName'" v-if="h.img" :src="h.img" alt="">
+                    <div class="audio" v-if="h.audio" :id="'audio_div_'+idx" @click="playAudio(event,idx)">
+                        <audio class="hooked_audio" :id="'audio_'+idx" :src="h.audio"></audio>
+                        <div class="audio-icon"></div>
+                        <div class="play" >点击播放</div>
+                        <div class="playing">播放中...</div>
+                    </div>
+                    <div class="extension_type clearfix" v-if="h.extension_type" :id="'extension_div_'+idx" @click="playExtension(event,h,idx)">
+                        <audio :id="'extension_'+idx" :src="h.extension_value"></audio>
+                        <div class="extension-icon">
+                            <img src="http://hbpic-10057247.file.myqcloud.com/cover/c3a16690f5d0ee8bfa2272698dad5c56.png">
+                        </div>
+                        <div class="play" >来电</div>
+                    </div>
+                    <div class="share-article" v-if="h.f==1" @click="shareJump(h.p.id,event)">
+                        <img class="share-cover" :src="h.p.image" alt="">
+                        <div class="share-desc-container">
+                            <div class="share-title">{{h.p.title}}</div>
+                            <div class="share-author-name">{{h.p.author}}</div>
+                            <img class="share-author-img" :src="h.p.author_image" alt="">
+                        </div>
+
+                    </div>
+                    <div class="arrow" v-if="!h.img"></div>
+                </div>
+            </div>
+        </transition-group>
+    </div>
+    <div class="click" @click="clickHooked" v-show="data.clickIndex==0">
+        <img class="continue" src="//hbpic-10057247.file.myqcloud.com/engine/continue.png" alt="">
+    </div>
+    <div class="BigImg" @click="bigImgHide()">
+        <div class="show-img-div">
+            <img :src="data.showImg" alt="">
+        </div>
+    </div>
+    <progress id="progress" value="0" max="100"></progress>
+    <!-- 来电 -->
+    <div class="phone" v-show="data.extensionShow">
+        <div class="top">
+            <div class="avatar">
+                <img :src="data.extension.head">
+            </div>
+            <div class="name">{{data.extension.name}}</div>
+        </div>
+        <div class="main">
+            <div v-show="data.answerShow">
+                <div class="time">{{data.currentTime}}</div>
+            </div>
+        </div>
+        <div class="bottom" v-show='!data.answerShow'>
+            <div class="btn" @click="extensionShowHide()">
+                <div class="img">
+                    <img src="http://hbpic-10057247.file.myqcloud.com/cover/ce57e3c5b2f161cea87beab1abf9cf3d.png">
+                </div>
+                <div class="txt">拒绝</div>
+            </div>
+            <div class="btn" @click="answerPlay()">
+                <div class="img">
+                    <img src="http://hbpic-10057247.file.myqcloud.com/cover/76ba10a11c656c8f36a56ce49455d861.png">
+                </div>
+                <div class="txt">接听</div>
+            </div>
+        </div>
+        <div class="bottom_close" v-show="data.answerShow">
+            <div class="btn" @click="extensionShowHide()">
+                <div class="img">
+                    <img src="http://hbpic-10057247.file.myqcloud.com/cover/ce57e3c5b2f161cea87beab1abf9cf3d.png">
+                </div>
+                <div class="txt">挂断</div>
+            </div>
+        </div>
+        <audio id="call_resources" :src="data.extension.value" style="display: none;"></audio>
+    </div>
+    <!-- bgm && scene_bgm-->
+    <div id="bgm" @click="playBgm()" v-show='data.bgm.url'>
+        <audio id="audio" loop="loop">
+            <source :src="data.bgm.url" type="audio/mp3">
+        </audio>
+        <img :src="data.bgm.autoplay == 1? '//hbpic-10057247.file.myqcloud.com/cover/2caf3cdfec836d437d35973c152eaf74.png':'//hbpic-10057247.file.myqcloud.com/cover/d8361af8f948680d894dba193e05e4e2.png'">
+    </div>
+    <!-- 来电 audio 准备-->
+    <audio id="videoCallAudio" src="http://hbpic-10057247.file.myqcloud.com/engine/videoCallAudio.mp3" loop="loop" preload="auto" style="display: none;"></audio>
+    <!--挂断来电 -->
+    <audio id="videoCloseAudio" src="http://hbpic-10057247.file.myqcloud.com/engine/videoCloseAudio.mp3" preload="" style="display: none;"></audio>
+</div>

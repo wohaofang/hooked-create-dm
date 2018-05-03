@@ -1,0 +1,16 @@
+{
+  "name": "hooked-create-dm",
+  "version": "1.1.0",
+  "description": "kuaishuang h5 hooked create module",
+  "main": "./src/build.js",
+  "scripts": {
+    "build": "babel ./src/index.js --out-file ./src/build.js"
+  },
+  "author": "dingsaonian",
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-preset-env": "^1.6.0"
+  },
+  "_from": "hooked-create-dm@1.0.8",
+  "_resolved": "http://registry.npm.taobao.org/hooked-create-dm/download/hooked-create-dm-1.0.8.tgz"
+}
